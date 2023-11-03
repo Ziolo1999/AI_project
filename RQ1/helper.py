@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from tqdm import tqdm
+import numpy as np
 
 # Define the training function for multi-label classification with validation
 def train_softmax(model, train_dataloader, val_dataloader, criterion, optimizer, save_dir, num_epochs=5):
@@ -58,23 +59,34 @@ def validate_softmax(model, val_dataloader, criterion, k=5):
     return val_loss, val_accuracy.item()
 
 
+
 # Define the training function for multi-label classification with validation
-def train_two_tower(model, customers, articles, train_dataloader, val_dataloader, criterion, optimizer, save_dir, num_epochs=5):
+def train_two_tower(model, customers, articles, buckets, train_dataloader, val_dataloader, criterion, optimizer, save_dir, num_epochs=5):
     mps_device = torch.device("mps")
+    all_articles_set = set(range(articles.shape[0]))
     model = model.to(mps_device)
     val_loss_list = []
     val_acc_list = []
     max_acc = 0
-    for epoch in tqdm(range(num_epochs)):
+    for epoch in range(num_epochs):
         model.train()
-        for articles_id, customers_id in train_dataloader: 
+        for articles_id, customers_id in tqdm(train_dataloader): 
+            # Positive sample
             articles_features = torch.tensor(articles[articles_id].todense(), dtype=torch.float32)
             customer_features = torch.tensor(customers[customers_id].todense(), dtype=torch.float32)
+            # Generate negative samplings
+            random_negative_articles = torch.tensor([np.random.choice(list(all_articles_set-set(buckets[cstmr.item()]))) for cstmr in customers_id])
+            negative_articles_features = torch.tensor(articles[random_negative_articles].todense(), dtype=torch.float32)
+            # Stack positives with negatives
+            customer_features = torch.vstack([customer_features, customer_features])
+            articles_features = torch.vstack([articles_features, negative_articles_features])
             articles_features = articles_features.to(mps_device)
             customer_features = customer_features.to(mps_device)
             optimizer.zero_grad()
             outputs = model(customer_features, articles_features)
-            loss = criterion(outputs, torch.ones(len(outputs)).to(mps_device))
+            # Generate outputs
+            vals = torch.hstack([torch.ones(int(len(outputs)/2)),torch.zeros(int(len(outputs)/2))])
+            loss = criterion(outputs, vals.to(mps_device))
             loss.backward()
             optimizer.step()
         # Validatete for the epoch

@@ -4,10 +4,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
-from KarolZiolo.RQ1.model import MLP1
-from KarolZiolo.RQ1.data_reader import load_data
+from AI_project.RQ1.model import MLP1
+from AI_project.RQ1.data_reader import load_data, load_data_mf, customer_buckets, matrix_representation
 import pandas as pd
-from KarolZiolo.RQ1.helper import train, validate
+from AI_project.RQ1.helper import train_softmax, validate_softmax
 import numpy as np
 from tqdm import tqdm
 from scipy.sparse import csr_matrix
@@ -40,7 +40,7 @@ customers = csr_matrix(customers.values)
 
 avg_basket_size = round(np.mean(transactions.groupby("customer_id")["customer_id"].count()))
 
-from KarolZiolo.RQ1.data_reader import customer_buckets
+from AI_project.RQ1.data_reader import customer_buckets
 
 articles
 buckets = customer_buckets(transactions, train_test=False)
@@ -84,4 +84,32 @@ def generate_negative_samples(customer_history):
 # Group transactions by customer and apply the generate_negative_samples function
 negative_samples = transactions.groupby('customer_id')['article_id'].apply(generate_negative_samples)
 
+buckets = customer_buckets(transactions, train_test=False)
 
+train_dataloader, val_dataloader = load_data_mf(transactions, batch_size=100)
+it = iter(train_dataloader)
+articles_id, customers_id = next(it)
+random_negative_articles = torch.tensor([np.random.choice(list(all_articles_set-set(buckets[cstmr.item()]))) for cstmr in customers_id])
+articles_features = torch.tensor(articles[articles_id].todense(), dtype=torch.float32)
+customer_features = torch.tensor(customers[customers_id].todense(), dtype=torch.float32)
+negative_articles_features = torch.tensor(articles[random_negative_articles].todense(), dtype=torch.float32)
+articles_features = articles_features.to(mps_device)
+customer_features = customer_features.to(mps_device)
+negative_articles_features = negative_articles_features.to(mps_device)
+customer_features = np.vstack([customer_features, customer_features])
+articles_features = np.vstack([articles_features, negative_articles_features])
+
+
+buckets_list = torch.tensor(list(buckets.values()))
+matrix = matrix_representation(transactions, train_test=False)
+matrix[customers_id]
+
+random_negative = torch.tensor([np.random.choice(list(all_articles_set-set(buckets[cstmr.item()]))) for cstmr in customers_id])
+cstmr = customers_id[0]
+x = all_articles_set-set(buckets[cstmr.item()])
+x.shape
+random.sample(all_articles_set,1)
+x = torch.vstack([customer_features,customer_features])
+customer_features.shape
+
+np.hstack([torch.ones(10),torch.zeros(10)])
