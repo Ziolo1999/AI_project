@@ -127,24 +127,28 @@ def customer_buckets(transactions, train_test=True):
     else:
         customer_buckets = transactions.groupby("customer_id")["article_id"].apply(list).to_dict()
         return customer_buckets
-    
+
+def split_transactions(transactions):
+    customer_last_purchase = transactions.groupby('customer_id')['t_dat'].max()
+    merged = transactions.merge(customer_last_purchase, on='customer_id', suffixes=('', '_last_purchase'))
+    # filter train and test dataset
+    x_transactions = merged[merged['t_dat'] != merged['t_dat_last_purchase']]
+    y_transactions = merged[merged['t_dat'] == merged['t_dat_last_purchase']]
+    return x_transactions, y_transactions
+
 def matrix_representation(transactions, train_test=True):
     customer_size = np.max(transactions['customer_id'])+1
-    article_size = np.max(transactions['article_id'])+1
+    article_size = 105542
     if train_test:
-        customer_last_purchase = transactions.groupby('customer_id')['t_dat'].max()
-        merged = transactions.merge(customer_last_purchase, on='customer_id', suffixes=('', '_last_purchase'))
         # filter train and test dataset
-        x_transactions = merged[merged['t_dat'] != merged['t_dat_last_purchase']]
-        y_transactions = merged[merged['t_dat'] == merged['t_dat_last_purchase']]
+        x_transactions, y_transactions = split_transactions(transactions)
 
         # Get X matrix
-        # Find the unique customer and article IDs
-
         # Create the data array filled with ones
         data = np.ones_like(x_transactions.index)
 
         # Create the CSR matrix directly
+        # assume that we investigate the purchase history therefore some articles were bought multiple times
         x_matrix = csr_matrix((data, 
                                (np.array(x_transactions['customer_id']), np.array(x_transactions['article_id']))), 
                                shape=(customer_size, article_size))
@@ -157,7 +161,8 @@ def matrix_representation(transactions, train_test=True):
         y_matrix = csr_matrix((data, 
                                (np.array(y_transactions['customer_id']), np.array(y_transactions['article_id']))), 
                                 shape=(customer_size, article_size))
-
+        # as an output we are interested if the article was bought not its amount
+        y_matrix[y_matrix>1]=1
         return x_matrix, y_matrix
     else:
         # Get test matrix
@@ -270,6 +275,35 @@ def load_data_mf(trans:pd.DataFrame, batch_size=1000):
     val_dataset = DatasetMF(val_transactions)
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
     val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
-    return train_dataloader, val_dataloader
-    
+    return train_dataloader, val_dataloader, test_customers
 
+class DatasetCustArt(Dataset):
+    def __init__(self, df:csr_matrix, transform:bool = None):
+        self.df = df
+
+    def __getitem__(self, index:int):
+        return self.df[index]
+
+    def __len__(self):
+        return self.df.shape[0]
+    
+def sparse_batch_collate_single(batch:list): 
+    """
+    Collate function which to transform scipy coo matrix to pytorch sparse tensor
+    """
+    data_batch = batch
+    if type(data_batch[0]) == csr_matrix:
+        data_batch = vstack(data_batch).tocoo()
+        data_batch = sparse_coo_to_tensor(data_batch)
+    else:
+        data_batch = torch.FloatTensor(data_batch)
+    return data_batch
+    
+def load_customers_articles(customers, articles, test_customers=None, batch_size=1000):
+    if test_customers != None:
+        customers = customers[test_customers]
+    dataset_cust = DatasetCustArt(customers)
+    dataset_art = DatasetCustArt(articles)
+    dataloader_cust = DataLoader(dataset_cust, batch_size=batch_size, collate_fn=sparse_batch_collate_single)
+    dataloader_art = DataLoader(dataset_art, batch_size=batch_size, collate_fn=sparse_batch_collate_single)
+    return dataloader_cust, dataloader_art
