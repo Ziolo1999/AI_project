@@ -64,7 +64,8 @@ def recommender_two_towers(model, dataloader_cust, dataloader_art, targets, eval
     full_customers_embeddings = full_customers_embeddings.to("cpu")
     for i in tqdm(range(partitions)):
         customer = full_customers_embeddings[i*1000:(i+1)*1000]
-        results = nn.sigmoid(customer.matmul(full_articles_embeddings.T))
+        predictions = nn.sigmoid(customer.matmul(full_articles_embeddings.T))
+        results = predictions - torch.tensor(targets[i*1000:(i+1)*1000].todense())
         _, top_k_indices = torch.topk(results, k=top_k, dim=1)
         recommendations = torch.vstack([recommendations, top_k_indices])
         recommendations = recommendations.to(torch.int64)
