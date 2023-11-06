@@ -20,6 +20,9 @@ CUSTOMER_PATH = "/Users/karol/Desktop/Antwerp/ai_project/data/customers.csv"
 TRANSACTION_PATH = "/Users/karol/Desktop/Antwerp/ai_project/data/transactions_train.csv"
 
 
+#######################################################################################
+#                                 Data Transformations                                #
+#######################################################################################
 def data_preprocessing(feature_generation=False, return_encodings=False, save=False):
     customers = pd.read_csv(CUSTOMER_PATH)
     transactions = pd.read_csv(TRANSACTION_PATH)
@@ -33,10 +36,12 @@ def data_preprocessing(feature_generation=False, return_encodings=False, save=Fa
     articles = articles.drop(columns=["detail_desc","index_code"])
 
     article_encodings = {}
+    article_decodings = {}
     for column in articles.columns:
         names = articles[column].unique()
         encoders = np.arange(len(names))
         article_encodings[column] = dict(zip(names, encoders))
+        article_decodings[column] = dict(zip(encoders, names))
         articles[column] = articles[column].apply(lambda x: article_encodings[column][x])
     # article feature selection
     cols_to_delete = ["prod_name","product_group_name","colour_group_name","perceived_colour_value_name","perceived_colour_value_name","index_group_name"]
@@ -53,6 +58,7 @@ def data_preprocessing(feature_generation=False, return_encodings=False, save=Fa
     customer_cols = ["customer_id","club_member_status","fashion_news_frequency","postal_code"]
     customers = customers.fillna(-1)
     customer_encodings = {}
+    customer_decodings = {}
     for column in customers[customer_cols]:
         names = customers[column].unique()
         if -1 in names:
@@ -63,6 +69,7 @@ def data_preprocessing(feature_generation=False, return_encodings=False, save=Fa
         else:
             encoders = np.arange(len(names))
             customer_encodings[column] = dict(zip(names, encoders))
+        customer_decodings[column] = dict(zip(encoders, names))
         
         customers[column] = customers[column].apply(lambda x: customer_encodings[column][x])
     
@@ -105,8 +112,15 @@ def data_preprocessing(feature_generation=False, return_encodings=False, save=Fa
         with open("data/preprocessed/customers_encoding.pickle", "wb") as pickle_file:
             pickle.dump(customer_encodings, pickle_file)
 
+        with open("data/preprocessed/articles_decoding.pickle", "wb") as pickle_file:
+            pickle.dump(article_decodings, pickle_file)
+        
+        with open("data/preprocessed/customers_decoding.pickle", "wb") as pickle_file:
+            pickle.dump(customer_decodings, pickle_file)
+
+
     if return_encodings:
-        return transactions, articles, customers, article_encodings, customer_encodings
+        return transactions, articles, customers, article_encodings, customer_encodings, article_decodings, customer_decodings
     else:
         return transactions, articles, customers
 
@@ -176,6 +190,33 @@ def matrix_representation(transactions, train_test=True):
 
         return matrix
 
+def create_random_candidates(transactions, save_dir=None, num_sample=30_000_000):
+    # get unique customers and articles
+    unique_customers = transactions['customer_id'].unique()
+    unique_articles = transactions['article_id'].unique()
+    # select random customers and articles
+    random_cust = np.random.choice(unique_customers, num_sample)
+    random_articles = np.random.choice(unique_articles, num_sample)
+    # get negative candidates dataframe
+    negative_samples_df = pd.DataFrame(zip(random_cust, random_articles), columns=["customer_id","article_id",])
+    # delete duplicates from original dataset
+    unique_pairs = set(zip(transactions['customer_id'], transactions['article_id']))
+    filtered_df = negative_samples_df[~negative_samples_df.apply(lambda row: (row['customer_id'], row['article_id']) in unique_pairs, axis=1)].copy()
+    # set purchased variable
+    filtered_df["purchased"] = np.zeros(len(filtered_df))
+    transactions["purchased"] = np.ones(len(transactions))
+    # merge dataframes
+    merge = pd.concat([transactions[["customer_id","article_id", "purchased"]],filtered_df[["customer_id","article_id", "purchased"]]])
+    # return shuffled dataframe
+    shuffled_df = merge.sample(frac=1).reset_index(drop=True)
+    if save_dir != None:
+        shuffled_df.to_csv(save_dir)
+    return shuffled_df
+
+#######################################################################################
+#                                    Dataset Classes                                  #
+#######################################################################################
+
 class SparseDataset(Dataset):
     """
     Custom Dataset class for scipy sparse matrix
@@ -204,6 +245,33 @@ class SparseDataset(Dataset):
     def __len__(self):
         return self.data.shape[0]
 
+class DatasetMF(Dataset):
+    def __init__(self,trans:pd.DataFrame, transform:bool = None):
+        self.transactions = trans
+
+    def __getitem__(self, index:int):
+        article_id = self.transactions["article_id"][index]
+        customer_id = self.transactions["customer_id"][index]
+        target = self.transactions["purchased"][index]
+        return article_id, customer_id, target
+
+    def __len__(self):
+        return self.transactions.shape[0]
+
+class SingleDataset(Dataset):
+    def __init__(self, df:csr_matrix, transform:bool = None):
+        self.df = df
+
+    def __getitem__(self, index:int):
+        return self.df[index]
+
+    def __len__(self):
+        return self.df.shape[0]
+    
+#######################################################################################
+#                                Functions for Dataloader                             #
+#######################################################################################
+
 def sparse_coo_to_tensor(coo:coo_matrix):
     """
     Transform scipy coo matrix to pytorch sparse tensor
@@ -212,11 +280,11 @@ def sparse_coo_to_tensor(coo:coo_matrix):
     indices = (coo.row, coo.col)
     shape = coo.shape
 
-    i = torch.LongTensor(indices)
+    i = torch.LongTensor(np.array(indices))
     v = torch.FloatTensor(values)
     s = torch.Size(shape)
 
-    return torch.sparse.FloatTensor(i, v, s)
+    return torch.sparse_coo_tensor(i, v, s)
     
 def sparse_batch_collate(batch:list): 
     """
@@ -236,57 +304,6 @@ def sparse_batch_collate(batch:list):
         targets_batch = torch.FloatTensor(targets_batch)
     return data_batch, targets_batch
 
-class DatasetMF(Dataset):
-    def __init__(self,trans:pd.DataFrame, transform:bool = None):
-        self.transactions = trans
-
-    def __getitem__(self, index:int):
-        article_id = self.transactions["article_id"][index]
-        customer_id = self.transactions["customer_id"][index]
-        return article_id, customer_id
-
-    def __len__(self):
-        return self.transactions.shape[0]
-
-def load_data(transactions, data_preprocessing=False, train_test=True, batch_size=1000):
-    # preprocess data
-    # matrix representation
-    x_matrix, y_matrix = matrix_representation(transactions, train_test=train_test)
-    # sparse dataset
-    dataset = SparseDataset(x_matrix, y_matrix)
-    # split dataset
-    train_size = int(0.9 * len(dataset))
-    val_size = len(dataset) - train_size
-    train_dataset, val_dataset = random_split(dataset,[train_size, val_size])
-    # load data
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, collate_fn=sparse_batch_collate)
-    val_dataloader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=sparse_batch_collate)
-    return train_dataloader, val_dataloader
-
-def load_data_mf(trans:pd.DataFrame, batch_size=1000):
-    test_fraction = 0.1
-    unique_customers = trans['customer_id'].unique()
-    train_customers, test_customers = train_test_split(unique_customers, test_size=test_fraction, random_state=42)
-    train_transactions = trans[trans['customer_id'].isin(train_customers)].reset_index(drop=True)
-    val_transactions = trans[trans['customer_id'].isin(test_customers)].reset_index(drop=True)
-
-    # load data
-    train_dataset = DatasetMF(train_transactions)
-    val_dataset = DatasetMF(val_transactions)
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
-    val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
-    return train_dataloader, val_dataloader, test_customers
-
-class DatasetCustArt(Dataset):
-    def __init__(self, df:csr_matrix, transform:bool = None):
-        self.df = df
-
-    def __getitem__(self, index:int):
-        return self.df[index]
-
-    def __len__(self):
-        return self.df.shape[0]
-    
 def sparse_batch_collate_single(batch:list): 
     """
     Collate function which to transform scipy coo matrix to pytorch sparse tensor
@@ -299,11 +316,75 @@ def sparse_batch_collate_single(batch:list):
         data_batch = torch.FloatTensor(data_batch)
     return data_batch
     
-def load_customers_articles(customers, articles, test_customers=None, batch_size=1000):
-    if test_customers != None:
+def MF_batch_collate(batch:list): 
+    """
+    Collate function which to transform scipy coo matrix to pytorch sparse tensor
+    """
+    articles_batch, customer_batch, targets_batch = zip(*batch)
+    if type(articles_batch[0]) == csr_matrix:
+        data_barticles_batchatch = vstack(articles_batch).tocoo()
+        articles_batch = sparse_coo_to_tensor(articles_batch)
+    else:
+        articles_batch = torch.FloatTensor(articles_batch)
+    
+    if type(customer_batch[0]) == csr_matrix:
+        customer_batch = vstack(customer_batch).tocoo()
+        customer_batch = sparse_coo_to_tensor(customer_batch)
+    else:
+        customer_batch = torch.FloatTensor(customer_batch)
+
+    if type(targets_batch[0]) == csr_matrix:
+        targets_batch = vstack(targets_batch).tocoo()
+        targets_batch = sparse_coo_to_tensor(targets_batch)
+    else:
+        targets_batch = torch.FloatTensor(targets_batch)
+    return articles_batch, customer_batch, targets_batch
+
+#######################################################################################
+#                                      Data Loaders                                   #
+#######################################################################################
+
+def load_data(transactions, train_test=True, batch_size=1000):
+    if train_test:
+        # matrix representation
+        x_matrix, y_matrix = matrix_representation(transactions, train_test=train_test)
+        # sparse dataset
+        dataset = SparseDataset(x_matrix, y_matrix)
+        # split dataset
+        train_size = int(0.9 * len(dataset))
+        val_size = len(dataset) - train_size
+        train_dataset, val_dataset = random_split(dataset,[train_size, val_size])
+        # load data
+        train_dataloader = DataLoader(train_dataset, batch_size=batch_size, collate_fn=sparse_batch_collate)
+        val_dataloader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=sparse_batch_collate)
+        return train_dataloader, val_dataloader
+    else:
+        # matrix representation
+        matrix = matrix_representation(transactions, train_test=train_test)
+        # sparse dataset
+        dataset = SingleDataset(matrix)
+        dataloader = DataLoader(dataset, batch_size=batch_size, collate_fn=sparse_batch_collate_single)
+        return dataloader
+
+def load_data_mf(trans:pd.DataFrame, batch_size=1000):
+    test_fraction = 0.1
+    unique_customers = trans['customer_id'].unique()
+    train_customers, test_customers = train_test_split(unique_customers, test_size=test_fraction, random_state=42)
+    train_transactions = trans[trans['customer_id'].isin(train_customers)].reset_index(drop=True)
+    val_transactions = trans[trans['customer_id'].isin(test_customers)].reset_index(drop=True)
+
+    # load data
+    train_dataset = DatasetMF(train_transactions)
+    val_dataset = DatasetMF(val_transactions)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, collate_fn=MF_batch_collate)
+    val_dataloader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=MF_batch_collate)
+    return train_dataloader, val_dataloader, test_customers
+
+def load_customers_articles(customers, articles, test_customers=[], batch_size=1000):
+    if len(test_customers)!=0:
         customers = customers[test_customers]
-    dataset_cust = DatasetCustArt(customers)
-    dataset_art = DatasetCustArt(articles)
+    dataset_cust = SingleDataset(customers)
+    dataset_art = SingleDataset(articles)
     dataloader_cust = DataLoader(dataset_cust, batch_size=batch_size, collate_fn=sparse_batch_collate_single)
     dataloader_art = DataLoader(dataset_art, batch_size=batch_size, collate_fn=sparse_batch_collate_single)
     return dataloader_cust, dataloader_art

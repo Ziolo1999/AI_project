@@ -95,3 +95,70 @@ total += targets.sum()
 x = torch.tensor([[1,2,3],[1,2,3]])
 y = torch.tensor([[1,2,3],[1,2,3]])
 nn.functional.sigmoid(torch.tensor([0,12,1]))
+
+
+import pandas as pd
+
+data = {
+    'transaction_id': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'customer_id': [101, 102, 103, 104, 105, 101, 103, 102, 106, 104],
+    'article_id': ['A', 'B', 'A', 'C', 'B', 'A', 'C', 'B', 'D', 'C'],
+    'transaction_date': [
+        '2023-01-01', '2023-01-01', '2023-01-02', '2023-01-02', '2023-01-03',
+        '2023-01-04', '2023-01-04', '2023-01-05', '2023-01-06', '2023-01-07'
+    ]
+}
+
+transactions = pd.DataFrame(data)
+
+import pandas as pd
+import random
+
+# Assuming you have a transactions dataframe with columns: date, customer_id, article_id
+# Replace "transactions" with the name of your original transactions dataframe
+
+# Determine the range of customer and article IDs
+unique_customers = transactions['customer_id'].unique()
+unique_articles = transactions['article_id'].unique()
+
+# Create a list to store negative samples
+negative_samples = []
+len(transactions)
+# Set the number of negative samples you want to generate
+num_negative_samples = 30_000_000  # Adjust this as needed
+
+random_cust = np.random.choice(unique_customers, num_negative_samples)
+random_articles = np.random.choice(unique_articles, num_negative_samples)
+# Create a DataFrame for the negative samples
+negative_samples_df = pd.DataFrame(zip(random_cust, random_articles), columns=["customer_id","article_id",])
+
+unique_pairs = set(zip(transactions['customer_id'], transactions['article_id']))
+
+filtered_df2 = negative_samples_df[~negative_samples_df.apply(lambda row: (row['customer_id'], row['article_id']) in unique_pairs, axis=1)].copy()
+
+def create_random_candidates(transactions, save_dir=None, num_sample=30_000_000):
+    # get unique customers and articles
+    unique_customers = transactions['customer_id'].unique()
+    unique_articles = transactions['article_id'].unique()
+    # select random customers and articles
+    random_cust = np.random.choice(unique_customers, num_sample)
+    random_articles = np.random.choice(unique_articles, num_sample)
+    # get negative candidates dataframe
+    negative_samples_df = pd.DataFrame(zip(random_cust, random_articles), columns=["customer_id","article_id",])
+    # delete duplicates from original dataset
+    unique_pairs = set(zip(transactions['customer_id'], transactions['article_id']))
+    filtered_df = negative_samples_df[~negative_samples_df.apply(lambda row: (row['customer_id'], row['article_id']) in unique_pairs, axis=1)].copy()
+    # set purchased variable
+    filtered_df["purchased"] = np.zeros(len(filtered_df))
+    transactions["purchased"] = np.ones(len(transactions))
+    # merge dataframes
+    merge = pd.concat([transactions[["customer_id","article_id", "purchased"]],filtered_df[["customer_id","article_id", "purchased"]]])
+    # return shuffled dataframe
+    shuffled_df = merge.sample(frac=1).reset_index(drop=True)
+    if save_dir != None:
+        shuffled_df.to_csv(save_dir)
+    return shuffled_df
+
+merged_df = create_random_candidates(transactions, save=False, num_sample=30_000_000)
+
+merged_df.to_csv("data/preprocessed/transactions_candidates.csv")
