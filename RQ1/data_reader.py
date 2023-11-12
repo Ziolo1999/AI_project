@@ -19,7 +19,6 @@ ARTICLES_PATH = "/Users/karol/Desktop/Antwerp/ai_project/data/articles.csv"
 CUSTOMER_PATH = "/Users/karol/Desktop/Antwerp/ai_project/data/customers.csv"
 TRANSACTION_PATH = "/Users/karol/Desktop/Antwerp/ai_project/data/transactions_train.csv"
 
-
 #######################################################################################
 #                                 Data Transformations                                #
 #######################################################################################
@@ -212,6 +211,17 @@ def create_random_candidates(transactions, save_dir=None, num_sample=30_000_000)
     if save_dir != None:
         shuffled_df.to_csv(save_dir)
     return shuffled_df
+
+def articles_embbedings():
+    # read article and customer data
+    articles = pd.read_csv("data/preprocessed/articles.csv") 
+    # set indices
+    articles = articles.set_index("article_id")
+    # get embedding dims
+    article_cat_dim = []
+    for art_col in articles.columns:
+        article_cat_dim.append(len(articles[art_col].unique()))
+    return article_cat_dim
 
 #######################################################################################
 #                                    Dataset Classes                                  #
