@@ -188,3 +188,34 @@ class TwoTowerFinal(nn.Module):
         article_features = self.ArticleTower(article_features)
         # return product 
         return torch.sigmoid(torch.matmul(customer_features,article_features.T).diag())
+
+class CustomerTowerDiversification(nn.Module):
+    def __init__(self, input_customer_dim, output_dim=10):
+        super(CustomerTowerDiversification,self).__init__()
+        self.fc1 = nn.Linear(input_customer_dim, 250)
+        self.fc2 = nn.Linear(250, 125)
+        self.fc3 = nn.Linear(125, 50)
+        self.fc4 = nn.Linear(50, output_dim)
+
+    def forward(self, x):
+        #customers
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x)
+        return x
+
+class TwoTowerCustomer(nn.Module):
+    def __init__(self, input_article_dim, input_customer_dim, output_dim=10):
+        super(TwoTowerCustomer,self).__init__()
+        # Article tower
+        self.ArticleTower = ArticleTowerFinal(input_article_dim, output_dim)
+        self.CustomerTower = CustomerTowerDiversification(input_customer_dim, output_dim)
+
+    def forward(self, customer_features, article_features):
+        #customers
+        customer_features = self.CustomerTower(customer_features)
+        # articles
+        article_features = self.ArticleTower(article_features)
+        # return product 
+        return torch.sigmoid(torch.matmul(customer_features,article_features.T).diag())
