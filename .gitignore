@@ -1,4 +1,4 @@
-/RQ1/models/LogisticRegression.plt
-/RQ1/models/MLP2.plt
+/RQ1/models/LogisticRegression.pt
+/RQ1/models/MLP2.pt
 /RQ1/__pycache__
-*DS_Store
+/.DS_Store
