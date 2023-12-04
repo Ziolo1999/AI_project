@@ -1,6 +1,6 @@
-/RQ1/models/LogisticRegression.pt
-/RQ1/models/MLP2.pt
+/RQ1/models/
 /RQ1/__pycache__
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
