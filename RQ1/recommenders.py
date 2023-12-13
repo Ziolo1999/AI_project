@@ -182,7 +182,7 @@ def recommender_logistic(model, customers_n, dataloader_art, targets, restrictio
     else:
         return recommendations
 
-def recommender_two_towers_final(model, dataloader_cust, dataloader_art, targets, restrictions:list, evaluate: bool=False, top_k=5, exclude_already_bought=False):
+def recommender_two_towers_final(model, dataloader_cust, dataloader_art, targets, restrictions:list, evaluate: bool=False, top_k=5, exclude_already_bought=False, personal_candidates=[]):
     mps_device = torch.device("mps")
     model = model.to(mps_device)
     # Generate customers and articles embeddings
@@ -204,15 +204,18 @@ def recommender_two_towers_final(model, dataloader_cust, dataloader_art, targets
     full_customers_embeddings = full_customers_embeddings.to("cpu")
     for i in range(partitions):
         customer = full_customers_embeddings[i*1000:(i+1)*1000]
-        predictions = nn.sigmoid(customer.matmul(full_articles_embeddings.T))
+        results = nn.sigmoid(customer.matmul(full_articles_embeddings.T))
         # get rid of already bought articles
         if exclude_already_bought:
-            predictions = predictions - torch.tensor(targets[i*1000:(i+1)*1000].todense())
+            results = results - torch.tensor(targets[i*1000:(i+1)*1000].todense())
+        # apply personal candidates (for repurchased articles)
+        if type(personal_candidates) != list:
+            results = results.multiply(torch.tensor(personal_candidates[i*1000:(i+1)*1000].todense()))
         # apply mask for products that are currently selling
         for restriction in restrictions:
             mask_matrix = torch.zeros((1,full_articles_embeddings.shape[0]))
             mask_matrix[:,restriction] = 1
-            results = predictions.multiply(mask_matrix)
+            results = results.multiply(mask_matrix)
         _, top_k_indices = torch.topk(results, k=top_k, dim=1)
         recommendations = torch.vstack([recommendations, top_k_indices])
         recommendations = recommendations.to(torch.int64)
@@ -229,7 +232,7 @@ def recommender_two_towers_final(model, dataloader_cust, dataloader_art, targets
     else:
         return recommendations
 
-def recommender_two_towers_customer(model, dataloader_cust, dataloader_art, targets, restrictions:list, evaluate: bool=False, top_k=5, exclude_already_bought=False):
+def recommender_two_towers_customer(model, dataloader_cust, dataloader_art, targets, restrictions:list, evaluate: bool=False, top_k=5, exclude_already_bought=False, personal_candidates=[]):
     mps_device = torch.device("mps")
     model = model.to(mps_device)
     # Generate customers and articles embeddings
@@ -251,15 +254,18 @@ def recommender_two_towers_customer(model, dataloader_cust, dataloader_art, targ
     full_customers_embeddings = full_customers_embeddings.to("cpu")
     for i in range(partitions):
         customer = full_customers_embeddings[i*1000:(i+1)*1000]
-        predictions = nn.sigmoid(customer.matmul(full_articles_embeddings.T))
+        results = nn.sigmoid(customer.matmul(full_articles_embeddings.T))
         # get rid of already bought articles
         if exclude_already_bought:
-            results = predictions - torch.tensor(targets[i*1000:(i+1)*1000].todense())
+            results = results - torch.tensor(targets[i*1000:(i+1)*1000].todense())
+        # apply personal candidates (for repurchased articles)
+        if type(personal_candidates) != list:
+            results = results.multiply(torch.tensor(personal_candidates[i*1000:(i+1)*1000].todense()))
         # apply mask for products that are currently selling
         for restriction in restrictions:
             mask_matrix = torch.zeros((1,full_articles_embeddings.shape[0]))
             mask_matrix[:,restriction] = 1
-            results = predictions.multiply(mask_matrix)
+            results = results.multiply(mask_matrix)
         _, top_k_indices = torch.topk(results, k=top_k, dim=1)
         recommendations = torch.vstack([recommendations, top_k_indices])
         recommendations = recommendations.to(torch.int64)
