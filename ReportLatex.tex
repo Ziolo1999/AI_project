@@ -1,0 +1,776 @@
+%% bare_conf_compsoc.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% See:
+%% http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE Computer
+%% Society conference paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
+% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
+% *** with production work. The IEEE's font choices and paper sizes can   ***
+% *** trigger bugs that do not appear when using other class files.       ***                          ***
+% The testflow support page is at:
+% http://www.michaelshell.org/tex/testflow/
+
+
+
+\documentclass[conference,compsoc]{IEEEtran}
+% Some/most Computer Society conferences require the compsoc mode option,
+% but others may want the standard conference format.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference,compsoc]{../sty/IEEEtran}
+
+
+
+
+
+% Some very useful LaTeX packages include:
+% (uncomment the ones you want to load)
+
+
+% *** MISC UTILITY PACKAGES ***
+%
+%\usepackage{ifpdf}
+% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
+% compilation based on whether the output is pdf or dvi.
+% usage:
+% \ifpdf
+%   % pdf code
+% \else
+%   % dvi code
+% \fi
+% The latest version of ifpdf.sty can be obtained from:
+% http://www.ctan.org/pkg/ifpdf
+% Also, note that IEEEtran.cls V1.7 and later provides a builtin
+% \ifCLASSINFOpdf conditional that works the same way.
+% When switching from latex to pdflatex and vice-versa, the compiler may
+% have to be run twice to clear warning/error messages.
+
+
+
+
+
+
+% *** CITATION PACKAGES ***
+%
+\ifCLASSOPTIONcompsoc
+  % IEEE Computer Society needs nocompress option
+  % requires cite.sty v4.0 or later (November 2003)
+  \usepackage[nocompress]{cite}
+\else
+  % normal IEEE
+  \usepackage{cite}
+\fi
+% cite.sty was written by Donald Arseneau
+% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+% \cite{} output to follow that of the IEEE. Loading the cite package will
+% result in citation numbers being automatically sorted and properly
+% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+% \cite will automatically add leading space, if needed. Use cite.sty's
+% noadjust option (cite.sty V3.8 and later) if you want to turn this off
+% such as if a citation ever needs to be enclosed in parenthesis.
+% cite.sty is already installed on most LaTeX systems. Be sure and use
+% version 5.0 (2009-03-20) and later if using hyperref.sty.
+% The latest version can be obtained at:
+% http://www.ctan.org/pkg/cite
+% The documentation is contained in the cite.sty file itself.
+%
+% Note that some packages require special options to format as the Computer
+% Society requires. In particular, Computer Society  papers do not use
+% compressed citation ranges as is done in typical IEEE papers
+% (e.g., [1]-[4]). Instead, they list every citation separately in order
+% (e.g., [1], [2], [3], [4]). To get the latter we need to load the cite
+% package with the nocompress option which is supported by cite.sty v4.0
+% and later.
+
+
+
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  \graphicspath{{./images}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation
+% can be obtained at: 
+% http://www.ctan.org/pkg/graphicx
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found at:
+% http://www.ctan.org/pkg/epslatex
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). The IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+
+
+
+
+% *** MATH PACKAGES ***
+%
+%\usepackage{amsmath}
+% A popular package from the American Mathematical Society that provides
+% many useful and powerful commands for dealing with mathematics.
+%
+% Note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+%\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/amsmath
+
+
+
+
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+%\usepackage{algorithmic}
+% algorithmic.sty was written by Peter Williams and Rogerio Brito.
+% This package provides an algorithmic environment fo describing algorithms.
+% You can use the algorithmic environment in-text or within a figure
+% environment to provide for a floating algorithm. Do NOT use the algorithm
+% floating environment provided by algorithm.sty (by the same authors) or
+% algorithm2e.sty (by Christophe Fiorio) as the IEEE does not use dedicated
+% algorithm float types and packages that provide these will not provide
+% correct IEEE style captions. The latest version and documentation of
+% algorithmic.sty can be obtained at:
+% http://www.ctan.org/pkg/algorithms
+% Also of interest may be the (relatively newer and more customizable)
+% algorithmicx.sty package by Szasz Janos:
+% http://www.ctan.org/pkg/algorithmicx
+
+
+
+
+% *** ALIGNMENT PACKAGES ***
+%
+%\usepackage{array}
+% Frank Mittelbach's and David Carlisle's array.sty patches and improves
+% the standard LaTeX2e array and tabular environments to provide better
+% appearance and additional user controls. As the default LaTeX2e table
+% generation code is lacking to the point of almost being broken with
+% respect to the quality of the end results, all users are strongly
+% advised to use an enhanced (at the very least that provided by array.sty)
+% set of table tools. array.sty is already installed on most systems. The
+% latest version and documentation can be obtained at:
+% http://www.ctan.org/pkg/array
+
+
+% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+% generate multiline equations as well as matrices, tables, etc., of high
+% quality.
+
+
+
+
+% *** SUBFIGURE PACKAGES ***
+%\ifCLASSOPTIONcompsoc
+%  \usepackage[caption=false,font=footnotesize,labelfont=sf,textfont=sf]{subfig}
+%\else
+%  \usepackage[caption=false,font=footnotesize]{subfig}
+%\fi
+% subfig.sty, written by Steven Douglas Cochran, is the modern replacement
+% for subfigure.sty, the latter of which is no longer maintained and is
+% incompatible with some LaTeX packages including fixltx2e. However,
+% subfig.sty requires and automatically loads Axel Sommerfeldt's caption.sty
+% which will override IEEEtran.cls' handling of captions and this will result
+% in non-IEEE style figure/table captions. To prevent this problem, be sure
+% and invoke subfig.sty's "caption=false" package option (available since
+% subfig.sty version 1.3, 2005/06/28) as this is will preserve IEEEtran.cls
+% handling of captions.
+% Note that the Computer Society format requires a sans serif font rather
+% than the serif font used in traditional IEEE formatting and thus the need
+% to invoke different subfig.sty package options depending on whether
+% compsoc mode has been enabled.
+%
+% The latest version and documentation of subfig.sty can be obtained at:
+% http://www.ctan.org/pkg/subfig
+
+
+
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure.
+% Be aware that LaTeX2e kernels dated 2015 and later have fixltx2e.sty's
+% corrections already built into the system in which case a warning will
+% be issued if an attempt is made to load fixltx2e.sty as it is no longer
+% needed.
+% The latest version and documentation can be found at:
+% http://www.ctan.org/pkg/fixltx2e
+
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/stfloats
+% Do not use the stfloats baselinefloat ability as the IEEE does not allow
+% \baselineskip to stretch. Authors submitting work to the IEEE should note
+% that the IEEE rarely uses double column equations and that authors should try
+% to avoid such use. Do not be tempted to use the cuted.sty or midfloat.sty
+% packages (also by Sigitas Tolusis) as the IEEE does not format its papers in
+% such ways.
+% Do not attempt to use stfloats with fixltx2e as they are incompatible.
+% Instead, use Morten Hogholm'a dblfloatfix which combines the features
+% of both fixltx2e and stfloats:
+%
+% \usepackage{dblfloatfix}
+% The latest version can be found at:
+% http://www.ctan.org/pkg/dblfloatfix
+
+
+
+
+% *** PDF, URL AND HYPERLINK PACKAGES ***
+%
+%\usepackage{url}
+% url.sty was written by Donald Arseneau. It provides better support for
+% handling and breaking URLs. url.sty is already installed on most LaTeX
+% systems. The latest version and documentation can be obtained at:
+% http://www.ctan.org/pkg/url
+% Basically, \url{my_url_here}.
+
+
+
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+%
+% paper title
+% Titles are generally capitalized except for words such as a, an, and, as,
+% at, but, by, for, in, nor, of, on, or, the, to and up, which are usually
+% not capitalized unless they are the first or last word of the title.
+% Linebreaks \\ can be used within to get better formatting as desired.
+% Do not put math or special symbols in the title.
+\title{Enhancing Retail Store Recommendations \\through Deep Neural Networks}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{\IEEEauthorblockN{Karol Ziolo}
+\IEEEauthorblockA{Master of DS and AI\\
+Univeristy of Antwerp\\
+Email: karol.ziolo@student.uantwerpen.be\\
+Student Nr: 20224449}}
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page (and note that there is less available width in this regard for
+% compsoc conferences compared to traditional conferences), use this
+% alternative format:
+% 
+%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
+%Homer Simpson\IEEEauthorrefmark{2},
+%James Kirk\IEEEauthorrefmark{3}, 
+%Montgomery Scott\IEEEauthorrefmark{3} and
+%Eldon Tyrell\IEEEauthorrefmark{4}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
+%Georgia Institute of Technology,
+%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212, Fax: (888) 555--1212}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+
+% make the title area
+\maketitle
+
+% As a general rule, do not put math, special symbols or citations
+% in the abstract
+\begin{abstract}
+Within this research report, the efficacy of Deep Neural Networks (DNNs) for retail store recommender systems is explored. The study investigates the comparative performance of DNN-based Matrix Factorisation against Multi-Layer Perceptron (MLP) models. Additionally, it evaluates the impact of feature engineering on the TwoTower model and examines the potential of personalized models in enhancing recommender system performance. Findings reveal insights into model performance, the importance of feature augmentation, and the potential for personalized models in retail recommender systems.
+\end{abstract}
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+In the realm of fashion retail, recommendation systems stand as essential pillars, revolutionising how consumers discover and engage with products. These sophisticated tools have undergone significant development, harnessing advanced algorithms and data analytics to anticipate and cater to individual preferences. Their evolution is paramount for the industry, shaping a landscape where personalised experiences reign supreme. By understanding and adapting to changing consumer behaviours, these recommendation systems not only drive sales but also elevate customer satisfaction. As such, their continual enhancement remains a critical strategy for fashion brands to ensure relevance, resonating deeply with their audience's ever-evolving desires.
+
+This report outlines my endeavour to develop a recommender system for the H\&M Personalised Fashion Recommendations Kaggle competition. The competition provided datasets detailing customer profiles, articles, and transactions. Utilising this data, I aimed to construct a recommender system leveraging Machine Learning techniques to predict customer actions. Initially, we were introduced to a foundational model, Radek’s LGBMRanker, during our classes. This model primarily relied on article popularity and bestsellers. However, in my approach, I sought to create diverse models utilising Deep Learning methods for a more personalised recommendation system. I believed this strategy would better capture and interpret customers' shopping behaviours.
+
+In the project, the decision was made to evaluate two distinct deep learning models. The initial model involved employing a Multi Layer Perceptron (MLP) to analyse customers' baskets and forecast their subsequent basket choices. The second model utilised a Two Tower approach to construct customer embeddings and article embeddings, utilising these embeddings to estimate the likelihood of a particular customer purchasing a specific item. Both models underwent rigorous testing with various configurations, allowing for a comprehensive comparison of their performances.
+
+\section{Research Questions}
+
+Deep Learning has demonstrated its ability to comprehend intricate data patterns. There's a belief that in recommendation systems, this capability could contribute to generating more tailored suggestions. As we delve into improving these systems within the realm of fashion, three significant research queries have surfaced:
+\vspace{10pt}\\
+\textit{1) Which DNN model performs better, MPL for Recommendation or DNN for Matrix Factorisation?}
+\vspace{10pt}\\
+\textit{2) Can the enhancement of customer and article features improve the performance of the TwoTower model?}
+\vspace{10pt}\\
+\textit{3) Can the creation of personalised models enhance the performance of recommender system?}
+\vspace{12pt}
+
+Together, these research questions seek to expand the understanding of recommendation systems in the fashion retail domain. They provide valuable insights into strategies for improving user experiences and optimising these systems specifically for enhancing recommendations at H\&M and similar retailers.
+
+\section{Data}
+
+This section will concentrate on the datasets provided for analysis. These datasets encompass three categories: the initial dataset contains comprehensive information about all customers and their respective attributes. The second dataset comprises detailed information about various articles and their features. Finally, the third dataset catalogs transactional records along with their specific details. Within this section, I aim to explore and delineate the characteristics of these datasets to offer a comprehensive overview of the context we are navigating.
+
+\subsection{Data Exploration}
+
+The purpose of this subsection was to familiarise ourselves with the data by generating statistical insights and visualising patterns and observations. The following table displays descriptive statistics derived from the datasets:
+\begin{table}[htbp]
+    \centering
+    \caption{Descriptive Statistics}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Dataset & \# of observations & \# of features with NAs \\
+        \hline
+        Articles & 105,542 & 1 \\
+        Customers & 1,371,980 & 5 \\
+        Transactions & 31,788,324 & 0 \\
+        \hline
+    \end{tabular}
+    \label{tab:example}
+\end{table}
+
+The information within the table indicates a substantial volume of data, potentially valuable for pattern recognition, yet also posing potential memory-related challenges. Thus, efficient data handling becomes crucial for the models. Additionally, both the Article and Customer datasets contain variables with missing values.
+
+During this phase, I conducted a detailed analysis of specific features to assess whether any preprocessing steps were necessary and to identify fundamental patterns. An initial observation revealed that nearly all article features are categorised or grouped. Figure 1. illustrates the distribution of assortment concerning the index, delineating the subgroups within each index. This pattern is prevalent across most features within the dataset and can be depicted similarly for various other attributes.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{Assortment.png}} % Replace 'example-image' with your image file name
+    \caption{Assortment Distribution}
+    \label{fig:example}
+\end{figure}
+
+Upon scrutinising the features, certain discernible patterns emerged. Figure 2. illustrates the presence of discernible preferences in the choice of selling channels. This statistic presents an opportunity to explore whether distinguishable patterns exist within these distinct groups.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.8\linewidth]{images/SalesChannelPreference.png}} % Replace 'example-image' with your image file name
+    \caption{Sales Channel Distribution}
+    \label{fig:example}
+\end{figure}
+
+I opted to delve deeper into the age variable, considering its potential significance in identifying distinct patterns. Notably, variations in age distribution across index groups were observed. Consequently, a decision was made to generate a violin plot (Figure 3.) to visually represent these differences. The visualisation distinctly portrays that most groups exhibit a comparable age distribution, except for the Baby/Children group. Unlike the characteristic double hills observed in other groups, this group showcases a single hill, indicating a shift towards older customers. This observation holds potential significance for implementation in the modeling phase.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/AgeViolinplot.png}} 
+    \caption{Age Distribution}
+    \label{fig:example}
+\end{figure}
+
+Furthermore, an exploration into the sales proportion across index groups within the product categories was conducted and is depicted in Figure 4. This cross-analysis of features highlighted variations, indicating that certain product categories exhibit higher popularity within specific index groups. The plot on the left showcases highly sold products, whereas the right plot exhibits less popular products. It's apparent that the majority of products are predominantly favoured within the Ladieswear segment. Nonetheless, valuable insights can be derived from these visualisations. For instance, only a few product groups are observed within the Menswear index group. Similarly, specific groups are exclusively sold within the Children or Ladieswear segments.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/SalesDistribution.png}} 
+    \fbox{\includegraphics[width=0.9\linewidth]{images/SalesDistribution2.png}} 
+    \caption{Sales Distribution}
+    \label{fig:example}
+\end{figure}
+
+\subsection{Data Preprocessing}
+
+From the previous subsection we can conclude that, the data included vast amount of information. However, it needed to be properly preprocessed to capture some patterns. Firstly, it was noted that data presented in the article dataset might be strongly colinear as most features are grouped. This might raise some problems related with the model's stability. Moreover, I also tried not focus too much on the detailed features as they might lead to loosing the important patterns. Therefore it was decided to leave the following features: product type, graphical appearance, perceived colour master, department dame, index name, section name and garment group. In terms of the customers dataset there was different issue. There were some features that consist missing values. For FN and Active features it was decided to add -1. However, for Age it was decided to fill it with a median value. For both these datasets I decided to encode their categorical variables to reduce their memory space which handling will be a critical point in the modelling part. Therefore the encoder and decoder dictionaries have been created.  For transaction dataset it was decided to transform the date feature to date format and then apply encodings from customers and articles. 
+
+From the prior section, it's evident that the data holds a wealth of information, but preprocessing was necessary to uncover specific patterns. Initially, the article dataset raised concerns about strong collinearity due to feature grouping, potentially impacting the model's stability. Also, I steered away from focusing too much on intricate features, as this might obscure essential patterns. Consequently, I opted to retain certain key features—such as product type, appearance, colour, department, index name, section name, and garment group.
+
+In the customer dataset, there were missing values in some features. To address this, I used "-1" for FN and Active features, while Age was filled with the median value. Additionally, I encoded categorical variables in both datasets to conserve memory space, which will be crucial during modelling. This led to the creation of encoder and decoder dictionaries.
+
+Regarding the transaction dataset, I converted the date feature into date format and applied encodings derived from the customer and article datasets. This comprehensive approach aims to optimise data handling and lay a solid foundation for subsequent modelling steps.
+
+\section{Model Creation and Development}
+In this section of the report, I'll explore the architecture of the models, their training process, and how data was managed and supplied. Our attention will be directed towards two specific models, namely the MLP and TwoTower. This segment plays a pivotal role in addressing the initial research question. It serves as a foundational component for subsequent analyses and advancements. Additionally, it holds significance in handling the considerable volume of data, which stands as a primary challenge within this project.
+
+\subsection{Multi Linear Perceptron}
+The initial model, the Multi Linear Perceptron, utilized a straightforward neural network architecture to forecast forthcoming articles. Specifically, it operated by processing basket vectors for customers, predicting the likelihood of a customer purchasing a particular product based on these vectors, with the intention of recommending articles with the highest probabilities.
+
+The primary challenge encountered revolved around the extensive data, considering the vast amount of articles, exceeding 100,000, leading to sparsity. To address this, sparse matrices were employed. I developed a collate function to transform the scipy sparse matrix into a pytorch sparse tensor for application within pytorch, subsequently used by the dataloader. This was instrumental in efficiently managing memory by loading sparse matrices in batches via the dataloader.
+
+The MLP model's initial architecture was relatively straightforward, featuring a sole hidden layer comprising 100 neurons. Activation functions were incorporated—ReLU for the initial layer and sigmoid for the classification layer. 
+Opting for sigmoid over softmax was deliberate, considering the model's focus on addressing multi-classification challenges and assuming that the likelihood of purchasing an item remains independent of other purchase decisions.
+
+For model training, a specific function was devised, employing the Adam optimiser. Adam's adaptive learning rate aids quicker convergence, particularly in scenarios with sparse gradients or noisy data. It dynamically adjusts learning rates for each parameter, potentially leading to faster convergence and enhanced performance compared to traditional optimisers like SGD. Additionally, the BCEWithLogitsLoss function was utillized, optimising predictions for each class independently, advantageous when classes aren't mutually exclusive. The model underwent training for 10 epochs, with a learning rate set at 0.001.
+
+However, despite successful training without crashes, the model exhibited underfitting, reflected by identical train and validation accuracy across all epochs. This common issue in recommendation models hindered the model's learning beyond the initial epoch.
+
+To address this, a deeper model with two hidden layers was developed—one with 500 neurons and the other with 100. The training parameters remained unaltered. The deeper architecture exhibited slightly improved performance, albeit the differences weren't significantly impactful.
+
+\subsection{Two Tower Model}
+The subsequent model developed was the Two Tower model. In essence, this model is structured around two distinct blocks (towers) that leverage deep neural networks to compute embeddings for articles and customers. These embeddings are subsequently utilised to estimate the probability of a customer purchasing a specific article.
+
+\subsubsection{Base Model}\mbox{}\\
+In contrast to the MLP, the Two Tower model necessitated different data handling procedures. Firstly, I implemented negative sampling, opting for random selection of negative samples. This action resulted in doubling the dataset size to achieve a balanced representation of positive and negative samples. Secondly, the dataloader required a different approach. This time, it needed to manage customer IDs and article IDs as both inputs and targets.
+
+The architecture of the Two Tower model involves two distinct models: the Customer Tower and the Article Tower. These models accept customer feature vectors and article feature vectors, respectively. They generate embeddings, compute the dot product, and subsequently employ the sigmoid function to estimate probabilities.
+
+The training process is more intricate, involving the extraction of specific customer and article IDs from dataloader batches. Dense tensors of corresponding features are gathered and fed through the model. For all categorical features, I employed one-hot encoding. Moreover, the training utilized the Adam optimizer and MSE loss function. This training method proves efficient in terms of memory usage, and the model exhibits better learning between epochs compared to the MLP model.
+
+To enhance the Two Tower model, I experimented with deeper architectures for both the customer and article towers. Additionally, I tested embedding layers, excluding one-hot encoding, in place of linear layers.
+
+\subsubsection{Customer and Articles Diversification}\mbox{}\\
+While training the base models, it became apparent that both customer and article features wield substantial influence over model performance. The extensive range of these features could potentially facilitate the generation of precise embeddings that comprehensively characterize customers and articles. As a result, the decision was made to implement feature engineering and generate new features derived from the provided data.
+
+The selected features to be created within the customer dataset include:
+1) Sales channel preference,
+2) Favourite colour for current season,
+3) Favourite garment group,
+4) Average price,
+5) Amount of recent purchases,
+6) Sex prediction,
+7) Kid prediction.
+However, for the article dataset it was decided to create:
+1) Proportion of seasonal sales,
+2) Seasonal bestsellers,
+3) Age group preference,
+4) Average price,
+5) Sales channel preference.
+
+The description how these features have been obtained are presented in the appendix alongside with their distribution
+
+\section{Personalised Models}
+This part of the research focuses on developing models that cater to specific user preferences and behaviours. The aim is to understand how personalized methods improve the accuracy of recommendations. This investigation seeks to uncover how personalized models enhance the effectiveness of recommendation systems, providing valuable insights for strategic improvements aligned with the preferences of H\&M's customers and other similar retailers.
+
+The primary approach involved identifying customers based on their distinct shopping behaviors. Following a thorough analysis, several discernible groups were identified and are outlined below:
+
+1) Customers following bestseller trends based on they age group,
+
+2) Customers buying only clothes from a specific index section,
+
+3) Customers buying only discounted products,
+
+4) Seasonal customers.
+
+To assemble these customer groups, I had to compute relevant indices reflecting their respective behaviours. Utilising these indices, I determined the distribution among these customers and identified thresholds indicating membership in specific groups. The complete analysis is available in the appendix.
+
+However, one potential concern emerged that could affect the recommender systems. Specifically, certain customers were found to be associated with multiple groups, as illustrated by the heatmap showcased in the Figure 5.
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/Heatmap.png}} 
+    \caption{Shared Customers}
+    \label{fig:example}
+\end{figure}
+
+\section{Results}
+To generate recommendations across all these models, distinct recommendation functions were crafted, each handling the MLP and Two Tower models differently. For MLP models, the process was relatively straightforward. However, the recommenders for the Two Tower models required more intricate memory management. Initially, embeddings for all customers and articles were generated, followed by the creation of customer batches. Vectorization methods were employed to derive probabilities and select the top probable articles for each customer within the batch, forming a separate recommendation matrix.
+
+To assess the recommenders, a validation group of customers was formed, utilizing their last purchased baskets as targets. Subsequently, for the remaining baskets, the top-k recommendations were generated. By comparing these recommendations to the targets, precision and recall scores were calculated. The initial comparison was conducted for all base MLP and Two Tower models, depicted in the Figure 6. Both comparisons highlighted the substantial superiority of the Two Tower model over the MLP model, which displayed notably poor performance. This conclusion effectively addresses the first research question.
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/PrecisionBase.png}}
+    \fbox{\includegraphics[width=0.9\linewidth]{images/RecallBase.png}}
+    \caption{Performance Results for Base Models}
+    \label{fig:example}
+\end{figure}
+Furthermore, it was observed that the developed Two Tower model with embedding layers performed less effectively than the model utilizing One Hot Encoded categorical variables and employing linear layers. Additionally, the model featuring deeper towers showcased improved performance over the basic version. However, the most noteworthy enhancement was the significant improvement in model performance achieved through both customer and article diversification. This observation provides a positive response to the second research question.
+
+Given the superior performance of the Two Tower model with a deep architecture and diversified article and customer inputs, it was chosen as the foundation for addressing the third research question. This model served as the basis for training personalised models. However, an observation emerged indicating that, in certain customer scenarios, the shallow customer tower exhibited better performance. Consequently, a decision was made to train two models for each customer group.
+
+Furthermore, the recommenders were now capable of considering only specific article candidates. Hence, recommendations were generated for each model, encompassing scenarios with and without the inclusion of article candidates. This process yielded a plots, presented in the Figure 7., illustrating the precision and recall scores of the recommenders based on these criteria.
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/PrecisionPersonalised.png}}
+    \fbox{\includegraphics[width=0.9\linewidth]{images/RecallPersonalised.png}}
+    \caption{Performance Results for Personalised Models}
+    \label{fig:example}
+\end{figure}
+
+From these plots, it's evident that performance strongly correlates with customer groups. Additionally, the effectiveness of specific settings varies across these groups. Interestingly, customers categorised as kids exhibits slightly poorer performance compared to others. This suggests a potential need for adjustments in the indices defining these behaviours or for stricter thresholds. Consequently, the decision was made to select the best-performing model within each group.
+
+To generate final recommendations using personalised models, a pipeline was constructed to produce recommendations based on the models assigned to individual customers. Addressing the issue of customers assigned to multiple groups, the solution involved prioritising models based on their precision scores. Hence, the pipeline recommends products starting from customers associated with models performing less effectively and progresses to those with better-performing models. This approach overwrites recommendations for shared customers with models exhibiting superior performance.
+
+In evaluating this personalised recommender system, the top-k precision and recall scores were computed again, and presented in the Figure 8.
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/PrecisionFinal.png}}
+    \fbox{\includegraphics[width=0.9\linewidth]{images/RecallFinal.png}}
+    \caption{Performance Results for Personalised Models}
+    \label{fig:example}
+\end{figure}
+Additionally, the Average MAP score has been calculated and the results are presented in the Figure 9. Ultimately, a comparison was made among four models: the personalised model, the personalised model excluding already purchased products, the basic Two Tower model (lacking article and customer diversification), and the global model, encompassing all developments but lacking personalisation.
+\begin{figure}[htbp]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{images/MAP.png}}
+    \caption{Performance Results for Personalised Models}
+    \label{fig:example}
+\end{figure}
+
+Once again, it's evident that through further enhancements, the performance of the recommender system has markedly improved. In all plots, the Base model is notably surpassed by the other models. Additionally, it is observable that the personalised model marginally enhances the results, except in scenarios where already purchased products are restricted.
+
+Finally, all the recommendations have been submitted to the Kaggle competition website, and their scores are outlined in the Table2.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Final Scores}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Model & Private Score & Public Score \\
+        \hline
+        Basic & 0.00084 & 0.00091 \\
+        Personalised & 0.00293 & 0.00306 \\
+        Global & 0.00332 & 0.00322 \\
+        \hline
+    \end{tabular}
+    \label{tab:example}
+\end{table}
+
+Additionally, I'd like to touch upon Radek’s model, which significantly outperformed the model I presented. Its superior performance largely stems from its reliance on repurchased articles as candidates. Hence, an attempt was made to adopt a similar approach for both the personalised and global recommenders. In this instance, previously purchased articles were utilised as candidates, but from the last month, in contrast to Radek's approach, which utilised those from the last week. The private scores for this modified approach were 0.01061 and 0.01302, while the public scores were 0.01073 and 0.01323. These results provide a glimmer of hope indicating that the Two Tower model is beginning to chase the LGBMRanker.
+
+\section{Conclusion}
+In conclusion, I successfully addressed all three initial research questions outlined in this report. The superiority of the DNN for Matrix Factorisation over MLP models in constructing recommender systems was confirmed. Moreover, the significance of feature engineering became evident, showcasing that an increased array of customer and article features notably enhances the Two Tower model's performance. However, when it comes to the personalised Two Tower model, the outcomes were not as conclusive as in prior cases. While the evaluation part based on the validation dataset suggested a slightly superior performance of the personalised model over the global one, the Kaggle results imply the contrary.
+
+Towards the end, I opted to assess both the personalised and global models using repurchased candidates, resulting in a substantial improvement in the Kaggle results. I do regret not initiating this approach earlier during the creation of personalised models. I believe that merging these candidates with the Two Tower model could effectively differentiate customers, potentially elevating the model's performance. In essence, this study underscores the potential within the Two Tower model but emphasises the need for an extensive investment in time and data to gather additional features. Moreover, it confirms the critical nature of handling article candidates and diverse customer groups.
+
+
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation results for the network.}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that the IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command,
+% and the \label for the overall figure must come after \caption.
+% \hfil is used as a separator to get equal spacing.
+% Watch out that the combined width of all the subfigures on a 
+% line do not exceed the text width or a line break will occur.
+%
+%\begin{figure*}[!t]
+%\centering
+%\subfloat[Case I]{\includegraphics[width=2.5in]{box}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{box}%
+%\label{fig_second_case}}
+%\caption{Simulation results for the network.}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat[]), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+% Be aware that for subfig.sty to generate the (a), (b), etc., subfigure
+% labels, the optional argument to \subfloat must be present. If a
+% subcaption is not desired, just leave its contents blank,
+% e.g., \subfloat[].
+
+
+% An example of a floating table. Note that, for IEEE style tables, the
+% \caption command should come BEFORE the table and, given that table
+% captions serve much like titles, are usually capitalized except for words
+% such as a, an, and, as, at, but, by, for, in, nor, of, on, or, the, to
+% and up, which are usually not capitalized unless they are the first or
+% last word of the caption. Table text will default to \footnotesize as
+% the IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that the IEEE does not put floats in the very first column
+% - or typically anywhere on the first page for that matter. Also,
+% in-text middle ("here") positioning is typically not used, but it
+% is allowed and encouraged for Computer Society conferences (but
+% not Computer Society journals). Most IEEE journals/conferences use
+% top floats exclusively. 
+% Note that, LaTeX2e, unlike IEEE journals/conferences, places
+% footnotes above bottom floats. This can be corrected via the
+% \fnbelowfloat command of the stfloats package.
+
+
+% conference papers do not normally have an appendix
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+
+
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\end{document}
+
+
+
+
+
+% that's all folks
+\end{document}
+
+
