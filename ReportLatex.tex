@@ -410,6 +410,10 @@ This report outlines my endeavour to develop a recommender system for the H\&M P
 
 In the project, the decision was made to evaluate two distinct deep learning models. The initial model involved employing a Multi Layer Perceptron (MLP) to analyse customers' baskets and forecast their subsequent basket choices. The second model utilised a Two Tower approach to construct customer embeddings and article embeddings, utilising these embeddings to estimate the likelihood of a particular customer purchasing a specific item. Both models underwent rigorous testing with various configurations, allowing for a comprehensive comparison of their performances.
 
+\section{Related Work}
+The realm of recommender systems has been enriched by seminal studies that lay the groundwork for understanding user-item interactions. Heinz et al.'s (2017) exploration of LSTM-based dynamic customer models for fashion recommendations resonates with our current investigation into personalized recommendation systems \cite{heinz2017lstmbased}. Their emphasis on modeling temporal dynamics aligns with our efforts to capture nuanced customer behaviors over time. Similarly, Zhou et al.'s "Deep Interest Network" (2018) offers insights into intricate customer-article interactions through advanced network architectures \cite{zhou2018deep}. Their study echoes our approach in exploring feature-enhanced models, delving into the complexities of customer interests and behaviors within recommendation systems.
+Furthermore, collaborative filtering strategies have been pivotal in understanding user preferences. Works such as Strub and Mary (2015) and He et al. (2017) delve into collaborative filtering techniques, shedding light on modeling customer-article interactions \cite{strub:hal-01256422}; \cite{he2017neural}. Their emphasis on collaborative methods aligns with our investigation into customer-centric recommendation strategies. By building upon these foundational studies, our research endeavors to combine and extend these concepts. Through the augmentation of features and personalized modeling, we aim to refine recommendation systems' granularity and effectiveness, contributing to the evolutionary path of recommendation technology \cite{he2017neural}; \cite{strub:hal-01256422}.
+
 \section{Research Questions}
 
 Deep Learning has demonstrated its ability to comprehend intricate data patterns. There's a belief that in recommendation systems, this capability could contribute to generating more tailored suggestions. As we delve into improving these systems within the realm of fashion, three significant research queries have surfaced:
@@ -541,8 +545,6 @@ However, for the article dataset it was decided to create:
 4) Average price,
 5) Sales channel preference.
 
-The description how these features have been obtained are presented in the appendix alongside with their distribution
-
 \section{Personalised Models}
 This part of the research focuses on developing models that cater to specific user preferences and behaviours. The aim is to understand how personalized methods improve the accuracy of recommendations. This investigation seeks to uncover how personalized models enhance the effectiveness of recommendation systems, providing valuable insights for strategic improvements aligned with the preferences of H\&M's customers and other similar retailers.
 
@@ -556,7 +558,7 @@ The primary approach involved identifying customers based on their distinct shop
 
 4) Seasonal customers.
 
-To assemble these customer groups, I had to compute relevant indices reflecting their respective behaviours. Utilising these indices, I determined the distribution among these customers and identified thresholds indicating membership in specific groups. The complete analysis is available in the appendix.
+To assemble these customer groups, I had to compute relevant indices reflecting their respective behaviours. Utilising these indices, I determined the distribution among these customers and identified thresholds indicating membership in specific groups.
 
 However, one potential concern emerged that could affect the recommender systems. Specifically, certain customers were found to be associated with multiple groups, as illustrated by the heatmap showcased in the Figure 5.
 \begin{figure}[htbp]
@@ -599,14 +601,14 @@ In evaluating this personalised recommender system, the top-k precision and reca
     \centering
     \fbox{\includegraphics[width=0.9\linewidth]{images/PrecisionFinal.png}}
     \fbox{\includegraphics[width=0.9\linewidth]{images/RecallFinal.png}}
-    \caption{Performance Results for Personalised Models}
+    \caption{Performance Results for Final Models}
     \label{fig:example}
 \end{figure}
 Additionally, the Average MAP score has been calculated and the results are presented in the Figure 9. Ultimately, a comparison was made among four models: the personalised model, the personalised model excluding already purchased products, the basic Two Tower model (lacking article and customer diversification), and the global model, encompassing all developments but lacking personalisation.
 \begin{figure}[htbp]
     \centering
     \fbox{\includegraphics[width=0.9\linewidth]{images/MAP.png}}
-    \caption{Performance Results for Personalised Models}
+    \caption{Performance Results for Final Models}
     \label{fig:example}
 \end{figure}
 
