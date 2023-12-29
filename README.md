@@ -23,10 +23,10 @@ The remaining files within this section are Jupyter Notebooks. Each notebook ali
 ![Research Plan](research_plan.png)
 
 The sequence of the following files aligns with the established research plan:
-- `models_development.ipynb` - encompasses initial data preprocessing, base model training, and their development.
-- `customer_diversification.ipynb` - involves analysis and generation of new features for the customer dataset.
-- `article_diversification.ipynb` - involves analysis and creation of new features for the article dataset.
-- `candidates_generation.ipynb` - focuses on the analysis and creation of customer groups then utilizes them in training personalized models.
-- `candidates_summary.ipynb` - generates recommendations for all personalized models and conducts performance comparisons.
-- `pipeline.ipynb` - consolidates personalized models and a global model into a single recommender system.
-- `evaluation.ipynb` - aggregates recommendations from various research stages, presenting evaluations and comparative analyses.
+1) `models_development.ipynb` - encompasses initial data preprocessing, base model training, and their development.
+2) `customer_diversification.ipynb` - involves analysis and generation of new features for the customer dataset.
+3) `article_diversification.ipynb` - involves analysis and creation of new features for the article dataset.
+4) `candidates_generation.ipynb` - focuses on the analysis and creation of customer groups then utilizes them in training personalized models.
+5) `candidates_summary.ipynb` - generates recommendations for all personalized models and conducts performance comparisons.
+6) `pipeline.ipynb` - consolidates personalized models and a global model into a single recommender system.
+7) `evaluation.ipynb` - aggregates recommendations from various research stages, presenting evaluations and comparative analyses.
