@@ -32,5 +32,4 @@ The sequence of the following files aligns with the established research plan:
 7) `evaluation.ipynb` - aggregates recommendations from various research stages, presenting evaluations and comparative analyses.
 
 ## Working Folder Structure
-Image belowe represents the structure of my working folder. Please be aware that some paths need to be updated before running Jupyter Notebooks.
-[Structure](data_structure.txt)
+Please find the [Structure](data_structure.txt) of my working folder. Please be aware that some paths need to be updated before running Jupyter Notebooks.
