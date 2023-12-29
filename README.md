@@ -30,3 +30,7 @@ The sequence of the following files aligns with the established research plan:
 5) `candidates_summary.ipynb` - generates recommendations for all personalized models and conducts performance comparisons.
 6) `pipeline.ipynb` - consolidates personalized models and a global model into a single recommender system.
 7) `evaluation.ipynb` - aggregates recommendations from various research stages, presenting evaluations and comparative analyses.
+
+## Working Folder Structure
+Image belowe represents the structure of my working folder. Please be aware that some paths need to be updated before running Jupyter Notebooks.
+[Structure](data_structure.txt)
